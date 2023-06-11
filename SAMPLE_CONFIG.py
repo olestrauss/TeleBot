@@ -2,10 +2,10 @@
 # ------------- DO NOT SHARE -----------------
 
 class Codes():
-    api_id = "<YOUR_TELEGRAM_API_ID>"
-    api_hash = "<YOUR_TELEGRAM_API_HASH>"
-    openapi = "<YOUR_OPENAI_API_KEY>"
-    bot_token = "<YOUR_TELEGRAM_BOT_TOKEN>"
+    api_id = "<API_ID>"
+    api_hash = "<API_HASH>"
+    openapi = "<OPENAPI_KEY>"
+    bot_token = "<BOT_TOKEN>"
 
 class Prompts():
     summary_gpt_prompt = "\n\nTl;dr "
@@ -13,8 +13,14 @@ class Prompts():
 
 class Constants():
     excluded = ["OSBot", "BotFather", "Telegram"]
-    information = """Bot created by Ole S. to summarize messages containing specific keywords. 
-                    https://github.com/olestrausss"""
+    information = """Bot created by Ole S. to summarize messages containing specific keywords[.](https://github.com/olestrausss)"""
+    #limit = 4000
 
 class Models():
     model = "gpt-3.5-turbo"
+
+class Login():
+    creds = {'empty'     : 'false',
+             'user1'     : 'password1',
+             'user2'     : 'password2',
+             'user3'     : 'password3'}
