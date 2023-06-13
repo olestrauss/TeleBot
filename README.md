@@ -30,11 +30,12 @@ Before running the bot, make sure to set up the necessary API keys and tokens in
 
 ## Usage
 
-1. Run the bot using `python3 telebot.py`.
+1. Run the bot using `python3 telebot.py`. 
 2. Start a conversation with the bot on Telegram.
-3. Use the `/scrape` command followed by a keyword to initiate the message scraping process. Other commands can be found in the menu.
-4. The bot will provide a summarized response based on the scraped messages.
-5. If you want more information on the previous summary, use the `/more` command.
+3. Authorize using `/auth` command. Credentials can be set up in the config file, and are used to associate users with their respective session files. 
+4. Use the `/scrape` command followed by a keyword to initiate the message scraping process. Other commands can be found in the menu.
+5. The bot will provide a summarized response based on the scraped messages.
+6. If you want more information on the previous summary, use the `/more` command.
 
 ## Contributing
 
