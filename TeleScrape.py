@@ -1,8 +1,7 @@
 import logging
 import os
 from telethon import TelegramClient, errors
-from TeleConfig import Codes, Prompts, Constants
-from GPThelper import GPT
+from TeleConfig import Codes, Constants
 from termcolor import colored
 
 
@@ -15,19 +14,19 @@ class Scraper():
     async def check_telegram_api_timeout(self, client):
         try:
             await client.get_me()
-            logging.info(f"No issues with the Telegram API detected.")
+            logging.info(f'No issues with the Telegram API detected.')
             return False
         except errors.RpcTimeoutError as e:
-            logging.info(f"Telegram API on timeout. {e}")
+            logging.info(f'Telegram API on timeout. {e}')
             return True
         except errors.RpcCallFailError as e:
-            logging.info(f"Telegram API experienced another issue. {e}")
+            logging.info(f'Telegram API experienced another issue. {e}')
             return True
 
     async def scrape(self, keyword, username):
         chats = [] 
         messages = []
-        async with TelegramClient(os.path.join('personal_sessions', f'{username}_bot_session'), self.api_id, self.api_hash) as client:
+        async with TelegramClient(os.path.join('bot_sessions', f'{username}_bot_session'), self.api_id, self.api_hash) as client:
             if not await self.check_telegram_api_timeout(client):
 
                 async for group in client.iter_dialogs():
@@ -35,9 +34,9 @@ class Scraper():
                         if group.name not in Constants.excluded:
                                 entity = await client.get_entity(group.id)
                                 chats.append(entity)
-                                print(colored(f"Successfully pulled channel ID for {group.name[:2]}*****", "green"))
+                                print(colored(f'Successfully pulled channel ID for {group.name[:2]}*****', 'green'))
                     except Exception as error:
-                        print(colored(f"Error fetching ID for {group.name}: {error}", "red"))
+                        print(colored(f'Error fetching ID for {group.name}: {error}', 'red'))
 
                 for chat in chats:
                     async for message in client.iter_messages(chat, None, search = keyword):
@@ -47,11 +46,7 @@ class Scraper():
                                 messages.append(message.text)
                         else:
                             break
+                self.tokens = 0
                 return messages
             else:
-                print(colored("Telegram API issues.", "red"))
-
-    async def summarize(self, messages):
-        AI = GPT(Codes.openapi)
-        summary = await AI.get_response(f"{' '.join(messages)} {Prompts.gpt_prompt}")
-        return summary
+                logging.info('Telegram API issues.')

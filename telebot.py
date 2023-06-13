@@ -34,33 +34,46 @@ class TeleBot:
             await event.respond(f'Hey, im here!')
             self.prev_command_is_scrape = False
         
+        elif command.startswith('/user'):
+            if self.active_user:
+                await event.respond(f'Current active user is {self.active_user}. Great to have you!', reply_to=message.id)
+            else:
+                await event.respond('No user is currently logged in.')
+        
         elif command.startswith('/auth'):
             if not self.authorized:
                 try:    
                     self.user, self.passw = message.text.split(' ')[1:]
                 except ValueError:
                     await event.respond('Invalid Entry.')
+                    return
 
                 if self.user and self.passw:
-                    if Login.creds.get(self.user, 'empty') == self.passw:
-                        self.client = TelegramClient(os.path.join('personal_sessions', f'{self.active_user}_session'), Codes.api_id, Codes.api_hash)
-                        await event.respond(f'Welcome {self.user}. You are authorized.')
-                        logging.info(f'Authorized user {self.user}')
-                        self.active_user = self.user
-                        self.authorized = True
-                        self.user = self.passw = None
+                    if self.user in Login.creds:
+                        if Login.creds[self.user] == self.passw:
+                            await event.respond(f'Welcome {self.user}. You are authorized.')
+                            logging.info(f'Authorized user {self.user}')
+                            self.active_user = self.user
+                            self.authorized = True
+                            self.user = self.passw = None
+                        else:
+                            await event.respond('Login information incorrect. Please try again.')
+                            logging.info(f'Authentification with username {self.user} failed.')
                     else:
-                        await event.respond('Login information incorrect. Please try again.')
-                        logging.info(f'Authentification with username {self.user} failed.')
+                        await event.respond(f'Invalid entry.')
                 
             else:
                 await event.respond(f'Please log out first. Currently signed in as {self.active_user}')
         
         elif command.startswith('/logout'):
-            if self.authorized:                
-                self.authorized = False
-                logging.info('Logged out user.')
-                await event.respond('Successfully logged out.')
+            if self.authorized:
+                try:
+                    logging.info('Successfully logged out user.')
+                    await event.respond(f'Logged out {self.active_user}')
+                    self.active_user = None
+                    self.authorized = False
+                except Exception as e:
+                    logging.info(f'Error encountered when logging out: {e}')                   
             else:
                 await event.respond('Already logged out.')
                     
